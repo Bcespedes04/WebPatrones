@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Gym</title>
+    
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+    <div class="login-background">
+        <div class="login-container">
+            <div class="logo">
+                <img src="path/to/your/logo.png" alt="Logo Gym">
+            </div>
+            <h2>INICIO SESIÓN</h2>
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="email">EMAIL</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">CONTRASEÑA</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">INICIO</button>
+                <div class="form-group">
+                    <a href="#" class="forgot-password">No recuerdo mis datos de ingreso</a>
+                </div>
+            </form>
+            <div class="form-group mt-3">
+                <a href="/register" class="btn btn-secondary btn-block">Registrarse</a>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    
+    <script th:src="@{/js/rutinas.js}"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

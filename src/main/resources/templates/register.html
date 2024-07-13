@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrarse - Gym</title>
+    
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+    <div class="login-background">
+        <div class="login-container">
+            <div class="logo">
+                <img src="path/to/your/logo.png" alt="Logo Gym">
+            </div>
+            <h2>REGISTRARSE</h2>
+            <form th:action="@{/register}" method="post">
+                <div class="form-group">
+                    <label for="email">EMAIL</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">CONTRASEÑA</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">CONFIRMAR CONTRASEÑA</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">REGISTRARSE</button>
+                <div th:if="${error}" th:text="${error}" class="text-danger mt-2"></div>
+            </form>
+        </div>
+    </div>
+    
+    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    
+    <script th:src="@{/js/rutinas.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('confirmPassword').oninput = function() {
+                const password = document.getElementById('password').value;
+                const confirmPassword = this.value;
+                if (password !== confirmPassword) {
+                    this.setCustomValidity('Las contraseñas no coinciden.');
+                } else {
+                    this.setCustomValidity('');
+                }
+            };
+        });
+    </script>
+</body>
+</html>
+
+
+
+

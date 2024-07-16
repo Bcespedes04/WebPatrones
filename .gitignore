@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/java/firebase/gimasio-proyecto-firebase.json
+/src/main/resources/firebase/gimasio-proyecto-firebase.json

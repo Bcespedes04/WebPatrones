@@ -18,6 +18,9 @@ public class User implements Serializable {
 
     @Column(name = "nombre_usuario")
     private String nombreUsuario;
+    
+    @Column(name = "genero")
+    private String genero;
 
     @Column(name = "email")
     private String email;
@@ -30,6 +33,12 @@ public class User implements Serializable {
 
     @Column(name = "direccion")
     private String direccion;
+    
+    @Column(name = "ciudad")
+    private String ciudad;
+    
+    @Column(name = "zip_codigo")
+    private String zipCodigo;
 
     @Column(name = "telefono")
     private String telefono;

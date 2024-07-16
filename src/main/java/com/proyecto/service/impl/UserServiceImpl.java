@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
     public boolean userExists(String email) {
         return userDao.findByEmail(email) != null;
     }
+    
+    @Transactional(readOnly = true)
+    public User getUser(long id) {
+        return userDao.findById(id).orElse(null);
+    }
 }
 
 

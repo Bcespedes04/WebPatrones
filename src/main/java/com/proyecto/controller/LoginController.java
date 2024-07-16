@@ -58,6 +58,11 @@ public class LoginController {
         userService.save(user);
         return "redirect:/login";
     }
+    
+    @GetMapping("/editDatos")
+    public String showData() {
+        return "usuario/editDatos";
+    }
 }
 
 

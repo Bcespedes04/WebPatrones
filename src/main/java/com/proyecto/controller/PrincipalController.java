@@ -6,30 +6,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
+@SessionAttributes("user")
 public class PrincipalController {
 
     @Autowired
     private UserServiceImpl userServiceImpl;
 
+    @ModelAttribute("user")
+    public User user() {
+        return new User(); // Devuelve un nuevo objeto User por defecto
+    }
+
     @GetMapping("/principal")
-    public String principal(Model model) {
+    public String principal(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("user", user);
         return "paginaprincipal";
     }
 
     @GetMapping("/update/{idUser}")
     public String update(@PathVariable long idUser, Model model) {
-        // Busca el usuario utilizando el id proporcionado
         User user = userServiceImpl.getUser(idUser);
         if (user != null) {
             model.addAttribute("user", user);
-            return "Actualizar";
+            return "Actualizar"; // Asegúrate de que el nombre coincide con el archivo HTML
         } else {
             model.addAttribute("error", "Usuario no encontrado");
-            return "login";
+            return "redirect:/principal";
         }
     }
-
 }

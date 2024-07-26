@@ -57,7 +57,6 @@ public class LoginController {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
-        user.setFechaRegistro(new java.util.Date());
         user.setActivo(true);
 
         userService.save(user);
@@ -84,6 +83,7 @@ public class LoginController {
             usuarioExistente.setPais(user.getPais());
             usuarioExistente.setZipCodigo(user.getZipCodigo());
             usuarioExistente.setTelefono(user.getTelefono());
+            usuarioExistente.setFechaNacimiento(user.getFechaNacimiento());
 
             if (!imagenFile.isEmpty()) {
                 String rutaImagen = firebaseStorageService.cargaImagen(

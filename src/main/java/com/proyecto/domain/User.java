@@ -2,13 +2,14 @@ package com.proyecto.domain;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "usuario")
 public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -18,7 +19,7 @@ public class User implements Serializable {
 
     @Column(name = "nombre_usuario")
     private String nombreUsuario;
-    
+
     @Column(name = "genero")
     private String genero;
 
@@ -28,20 +29,23 @@ public class User implements Serializable {
     @Column(name = "contrasena")
     private String password;
 
+    @Column(name = "fecha_nacimiento")
+    private Date fechaNacimiento;
+
     @Column(name = "direccion")
     private String direccion;
-    
+
     @Column(name = "ciudad")
     private String ciudad;
-    
+
+    @Column(name = "pais")
+    private String pais;
+
     @Column(name = "zip_codigo")
     private String zipCodigo;
 
     @Column(name = "telefono")
     private String telefono;
-
-    @Column(name = "fecha_registro")
-    private Date fechaRegistro;
 
     @Column(name = "token_recuperacion")
     private String tokenRecuperacion;
@@ -55,24 +59,15 @@ public class User implements Serializable {
     @Column(name = "activo")
     private boolean activo;
 
-    @Column(name = "peso")
-    private int peso;
-
-    @Column(name = "pais")
-    private String pais;
+    @Column(name = "id_rol")
+    private int idRol;
 
     
     public boolean isActive() {
         return this.activo;
     }
 
-   
     public Long getId() {
         return this.idUsuario;
     }
 }
-
-
-
-
-

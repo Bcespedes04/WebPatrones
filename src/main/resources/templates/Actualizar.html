@@ -33,12 +33,13 @@
     <section style="background-color: #403A39;">
         <h2 style="color: #ffffff">Editar Perfil de miembro</h2>
         <div class="row">
-            <form th:action="@{/register}" 
+            <form th:action="@{/guardar}" 
                   th:object="${user}"
                   method="POST" 
                   class="was-validated" 
                   enctype="multipart/form-data"
                   style="margin-top: 20px;">
+                <input type="hidden" name="idUsuario" th:field="*{idUsuario}"/>
                 <input type="hidden" name="rutaImagen" th:field="*{rutaImagen}"/>
                 <div style="background-color: #fdd835;">
                     <div class="position-absolute top-50 start-50 translate-middle"></div>

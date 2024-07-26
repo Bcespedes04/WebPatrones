@@ -28,9 +28,6 @@ public class User implements Serializable {
     @Column(name = "contrasena")
     private String password;
 
-    @Column(name = "fecha_nacimiento")
-    private Date fechaNacimiento;
-
     @Column(name = "direccion")
     private String direccion;
     

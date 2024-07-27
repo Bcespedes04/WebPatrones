@@ -59,10 +59,10 @@ public class User implements Serializable {
     @Column(name = "activo")
     private boolean activo;
 
-    @Column(name = "id_rol")
-    private int idRol;
+    @ManyToOne
+    @JoinColumn(name = "id_rol")
+    private Rol rol;
 
-    
     public boolean isActive() {
         return this.activo;
     }
@@ -71,3 +71,4 @@ public class User implements Serializable {
         return this.idUsuario;
     }
 }
+

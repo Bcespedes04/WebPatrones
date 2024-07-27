@@ -19,7 +19,7 @@ public class PrincipalController {
 
     @ModelAttribute("user")
     public User user() {
-        return new User(); // Devuelve un nuevo objeto User por defecto
+        return new User();
     }
 
     @GetMapping("/principal")
@@ -33,10 +33,11 @@ public class PrincipalController {
         User user = userServiceImpl.getUser(idUser);
         if (user != null) {
             model.addAttribute("user", user);
-            return "Actualizar"; // Asegúrate de que el nombre coincide con el archivo HTML
+            return "Actualizar";
         } else {
             model.addAttribute("error", "Usuario no encontrado");
             return "redirect:/principal";
         }
     }
 }
+

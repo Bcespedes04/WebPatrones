@@ -205,7 +205,45 @@ body {
     text-decoration: underline;
 }
 
+.main-content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url('/mnt/data/image.png') no-repeat center center;
+    background-size: cover;
+    width: 100%;
+    text-align: center;
+}
 
+.main-content h1 {
+    font-size: 3em;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+    margin-bottom: 20px;
+}
+
+.main-content .btn {
+    background-color: #ffc107;
+    color: black;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.main-content .btn:hover {
+    background-color: #e6ac00;
+    color: white;
+}
+
+.bottom-right {
+    position: fixed;
+    bottom: 100px; /* Espacio ajustado para dejar el footer visible y un margen adicional */
+    right: 20px;
+    margin-bottom: 10px; /* Margen adicional de 30px */
+}
 
 
 

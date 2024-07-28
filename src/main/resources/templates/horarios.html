@@ -2,13 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Página Principal - Gym</title>
+    <title>Horarios - Gym</title>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
     <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
     <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <style>
+        .bottom-right {
+            position: fixed;
+            bottom: 100px; 
+            right: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -19,7 +27,7 @@
                 <li><a href="#">Tienda en Línea</a></li>
                 <li><a href="#">Eventos</a></li>
                 <li><a href="#">Noticias</a></li>
-                <li><a href="/horarios">Horarios</a></li> <!-- Botón de Horarios añadido -->
+                <li><a href="/horarios">Horarios</a></li>
                 <li><a href="#">Membresías</a></li>
                 <li><a href="#">Progreso</a></li>
                 <li class="dropdown user-icon-container">
@@ -37,12 +45,12 @@
     </div>
     <div class="main-content">
         <div>
-            <h1>Transforma tu vida,<br>Alcanza tu mejor versión.</h1>
-            <a href="#" class="btn btn-primary">Se parte de la familia Logo Gym</a>
-            <br><br>
-            <a href="/survey/list" class="btn btn-secondary">Responder Encuesta</a>
+            <h1>Horarios</h1>
+            <button class="btn btn-primary" onclick="location.href='/clases'">Clases</button>
+            <button class="btn btn-primary" onclick="location.href='/competencias'">Competencias</button>
         </div>
     </div>
+    <button class="btn btn-secondary bottom-right" onclick="location.href='/principal'">Regresar</button>
     <div class="footer">
         <p>&copy; 2024 Logo Gym. Todos los derechos reservados.</p>
         <div>
@@ -52,4 +60,3 @@
     </div>
 </body>
 </html>
-

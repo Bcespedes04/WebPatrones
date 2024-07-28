@@ -39,5 +39,10 @@ public class PrincipalController {
             return "redirect:/principal";
         }
     }
+
+    @GetMapping("/horarios")
+    public String horarios(Model model) {
+        return "horarios";
+    }
 }
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Clase de Zumba - Gym</title>
+    <title>Clase de Aeróbicos - Gym</title>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
@@ -47,15 +47,15 @@
         </nav>
     </div>
     <div class="main-content">
-        <h1 class="white-text">Clase de Zumba</h1>
-        <p class="white-text">Selecciona el día y la hora en la que deseas tener la clase de Zumba.</p>
+        <h1 class="white-text">Clase de Aeróbicos</h1>
+        <p class="white-text">Selecciona el día y la hora en la que deseas tener la clase de Aeróbicos.</p>
 
         <!-- Bloque de manejo de errores -->
         <div th:if="${error}" class="alert alert-danger" role="alert">
             <span th:text="${error}"></span>
         </div>
 
-        <form id="zumbaForm" action="/addZumbaClass" method="post">
+        <form id="aerobicosForm" action="/addAerobicosClass" method="post">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label class="white-text" for="clase">Clase:</label>
@@ -75,10 +75,10 @@
 
         <h2 class="white-text">Clases Disponibles</h2>
         <ul>
-            <li th:each="zumbaClass : ${zumbaClasses}">
-                <span class="white-text" th:text="${zumbaClass.clase} + ' - ' + ${#dates.format(zumbaClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${zumbaClass.horario}"></span>
-                <form action="/deleteZumbaClass" method="post" style="display:inline;">
-                    <input type="hidden" name="id_reserva" th:value="${zumbaClass.idReserva}">
+            <li th:each="aerobicosClass : ${aerobicosClasses}">
+                <span class="white-text" th:text="${aerobicosClass.clase} + ' - ' + ${#dates.format(aerobicosClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${aerobicosClass.horario}"></span>
+                <form action="/deleteAerobicosClass" method="post" style="display:inline;">
+                    <input type="hidden" name="id_reserva" th:value="${aerobicosClass.idReserva}">
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>
             </li>
@@ -94,7 +94,7 @@
     </div>
     
     <script>
-        document.getElementById('zumbaForm').addEventListener('submit', function(event) {
+        document.getElementById('aerobicosForm').addEventListener('submit', function(event) {
             const idUsuario = localStorage.getItem('id_usuario');
             if (!idUsuario) {
                 alert('No se encontró el ID del usuario en memoria. Por favor, inicie sesión nuevamente.');

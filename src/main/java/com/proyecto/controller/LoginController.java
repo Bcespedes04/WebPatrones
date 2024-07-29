@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -27,15 +30,19 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, Model model) {
+    @ResponseBody
+    public Map<String, Object> login(@RequestParam String email, @RequestParam String password) {
+        Map<String, Object> response = new HashMap<>();
         User user = userService.validateUser(email, password);
         if (user != null) {
-            model.addAttribute("user", user);
-            return "paginaprincipal";
+            response.put("id_usuario", user.getIdUsuario());
+            response.put("nombre_usuario", user.getNombreUsuario());
+            response.put("status", "success");
         } else {
-            model.addAttribute("error", "Invalid email or password");
-            return "login";
+            response.put("status", "error");
+            response.put("message", "Invalid email or password");
         }
+        return response;
     }
 
     @GetMapping("/register")
@@ -44,31 +51,29 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-public String register(@RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, Model model) {
-    if (!password.equals(confirmPassword)) {
-        model.addAttribute("error", "Las contraseñas no coinciden");
-        return "register";
+    public String register(@RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, Model model) {
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("error", "Las contraseñas no coinciden");
+            return "register";
+        }
+
+        if (userService.userExists(email)) {
+            model.addAttribute("error", "El correo electrónico ya está en uso");
+            return "register";
+        }
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setActivo(true);
+
+        Rol rol = new Rol();
+        rol.setIdRol(2);
+        user.setRol(rol);
+
+        userService.save(user);
+        return "redirect:/login";
     }
-
-    if (userService.userExists(email)) {
-        model.addAttribute("error", "El correo electrónico ya está en uso");
-        return "register";
-    }
-
-    User user = new User();
-    user.setEmail(email);
-    user.setPassword(password);
-    user.setActivo(true);
-
-    
-    Rol rol = new Rol();
-    rol.setIdRol(2);
-    user.setRol(rol);
-
-    userService.save(user);
-    return "redirect:/login";
-}
-
 
     @GetMapping("/editDatos")
     public String showData() {
@@ -77,12 +82,12 @@ public String register(@RequestParam String email, @RequestParam String password
 
     @PostMapping("/guardar")
     public String usuarioGuardar(User user,
-            @RequestParam("imagenFile") MultipartFile imagenFile) {
-       
+                                 @RequestParam("imagenFile") MultipartFile imagenFile) {
+
         User usuarioExistente = userService.getUser(user.getIdUsuario());
 
         if (usuarioExistente != null) {
-           
+
             usuarioExistente.setNombreUsuario(user.getNombreUsuario());
             usuarioExistente.setGenero(user.getGenero());
             usuarioExistente.setDireccion(user.getDireccion());
@@ -100,10 +105,10 @@ public String register(@RequestParam String email, @RequestParam String password
                 usuarioExistente.setRutaImagen(rutaImagen);
             }
 
-            
             userService.save(usuarioExistente);
         }
-    
+
         return "redirect:/actualizar";
     }
 }
+

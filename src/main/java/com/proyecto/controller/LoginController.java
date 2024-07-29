@@ -8,14 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
+@SessionAttributes("user")
 public class LoginController {
 
     @Autowired
@@ -24,25 +25,27 @@ public class LoginController {
     @Autowired
     private FirebaseStorageService firebaseStorageService;
 
+    @ModelAttribute("user")
+    public User user() {
+        return new User();
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
     @PostMapping("/login")
-    @ResponseBody
-    public Map<String, Object> login(@RequestParam String email, @RequestParam String password) {
-        Map<String, Object> response = new HashMap<>();
+    public String login(@RequestParam String email, @RequestParam String password, Model model) {
         User user = userService.validateUser(email, password);
         if (user != null) {
-            response.put("id_usuario", user.getIdUsuario());
-            response.put("nombre_usuario", user.getNombreUsuario());
-            response.put("status", "success");
+            model.addAttribute("user", user);
+            return "redirect:/principal";
         } else {
-            response.put("status", "error");
-            response.put("message", "Invalid email or password");
+            model.addAttribute("status", "error");
+            model.addAttribute("message", "Correo electrónico o contraseña inválidos");
+            return "login";
         }
-        return response;
     }
 
     @GetMapping("/register")
@@ -68,7 +71,7 @@ public class LoginController {
         user.setActivo(true);
 
         Rol rol = new Rol();
-        rol.setIdRol(2);
+        rol.setIdRol(2); // Asumiendo que 2 es el rol de cliente
         user.setRol(rol);
 
         userService.save(user);
@@ -109,6 +112,12 @@ public class LoginController {
         }
 
         return "redirect:/actualizar";
+    }
+
+    @GetMapping("/logout")
+    public String logout(SessionStatus status) {
+        status.setComplete();
+        return "redirect:/login";
     }
 }
 

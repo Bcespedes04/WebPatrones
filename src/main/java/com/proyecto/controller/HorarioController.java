@@ -11,4 +11,9 @@ public class HorarioController {
     public String clases(Model model) {
         return "clases";
     }
+    
+    @GetMapping("/competencias")
+    public String clase(Model model) {
+        return "competencias";
+    }
 }

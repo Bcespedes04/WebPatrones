@@ -25,6 +25,7 @@ public class PrincipalController {
     @GetMapping("/principal")
     public String principal(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("user", user);
+        System.out.println("-----------------------------------------------------------------------------------------------------"+ user);
         return "paginaprincipal";
     }
 

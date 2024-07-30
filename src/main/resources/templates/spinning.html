@@ -8,8 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
     <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
         .bottom-right {
             position: fixed;
             bottom: 100px; 
@@ -18,6 +24,33 @@
         }
         .white-text {
             color: white;
+        }
+        .main-content {
+            padding: 50px;
+            padding-bottom: 100px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .class-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .class-list ul {
+            padding-left: 0;
+        }
+        .class-list li {
+            list-style-type: none;
+            margin-bottom: 10px;
+        }
+        .footer {
+            background-color: #FFC107;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 5px;
         }
     </style>
 </head>
@@ -29,7 +62,6 @@
                 <li><a href="#">Sobre Nosotros</a></li>
                 <li><a href="#">Tienda en Línea</a></li>
                 <li><a href="#">Eventos</a></li>
-                <li><a href="#">Noticias</a></li>
                 <li><a href="/horarios">Horarios</a></li>
                 <li><a href="#">Membresías</a></li>
                 <li><a href="#">Progreso</a></li>
@@ -74,15 +106,60 @@
         </form>
 
         <h2 class="white-text">Clases Disponibles</h2>
-        <ul>
-            <li th:each="spinningClass : ${spinningClasses}">
-                <span class="white-text" th:text="${spinningClass.clase} + ' - ' + ${#dates.format(spinningClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${spinningClass.horario}"></span>
-                <form action="/deleteSpinningClass" method="post" style="display:inline;">
-                    <input type="hidden" name="id_reserva" th:value="${spinningClass.idReserva}">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </li>
-        </ul>
+        <div class="class-list">
+            <ul>
+                <li th:each="spinningClass : ${spinningClasses}">
+                    <span class="white-text" th:text="${spinningClass.clase} + ' - ' + ${#dates.format(spinningClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${spinningClass.horario}"></span>
+                    <div class="button-group">
+                        <form action="/registerSpinningClass" method="post" style="display:inline;">
+                            <input type="hidden" name="id_reserva" th:value="${spinningClass.idReserva}">
+                            <button type="submit" class="btn btn-success">Registrarse</button>
+                        </form>
+                        <!-- Botón para mostrar el formulario de modificación -->
+                        <button type="button" class="btn btn-warning" data-toggle="modal" th:data-target="'#modifyModal' + ${spinningClass.idReserva}" onclick="storeOriginalValues(${spinningClass.idReserva})">Modificar</button>
+                        <form action="/deleteSpinningClass" method="post" style="display:inline;">
+                            <input type="hidden" name="id_reserva" th:value="${spinningClass.idReserva}">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+
+                    <!-- Modal para modificar la clase -->
+                    <div class="modal fade" th:id="'modifyModal' + ${spinningClass.idReserva}" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true"
+                         th:classappend="${showModifyModal} == ${spinningClass.idReserva} ? 'show d-block' : ''">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modifyModalLabel">Modificar Clase</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="modifyForm-${spinningClass.idReserva}" action="/modifySpinningClass" method="post">
+                                        <input type="hidden" name="id_reserva" th:value="${spinningClass.idReserva}">
+                                        <div class="form-group">
+                                            <label for="fecha" class="col-form-label">Fecha:</label>
+                                            <input type="date" class="form-control" id="fecha-${spinningClass.idReserva}" name="fecha" th:value="${spinningClass.fecha}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="horario" class="col-form-label">Horario:</label>
+                                            <input type="time" class="form-control" id="horario-${spinningClass.idReserva}" name="horario" th:value="${spinningClass.horario}">
+                                        </div>
+                                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                                            <span th:text="${error}"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="restoreOriginalValues(${spinningClass.idReserva})">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
     <button class="btn btn-secondary bottom-right" onclick="location.href='/clases'">Regresar</button>
     <div class="footer">
@@ -109,7 +186,42 @@
 
             this.appendChild(hiddenInput);
         });
+
+        // Mostrar el modal si hay un error al modificar
+        window.onload = function() {
+            const showModifyModal = /*[[${showModifyModal}]]*/ 'null';
+            if (showModifyModal !== 'null') {
+                const modal = new bootstrap.Modal(document.getElementById('modifyModal' + showModifyModal));
+                modal.show();
+            }
+        };
+
+        // Variables para almacenar los valores originales de fecha y hora
+        var originalFecha = {};
+        var originalHorario = {};
+
+        // Función para almacenar los valores originales de fecha y hora
+        function storeOriginalValues(id) {
+            originalFecha[id] = document.getElementById('fecha-' + id).value;
+            originalHorario[id] = document.getElementById('horario-' + id).value;
+        }
+
+        // Función para restaurar los valores originales de fecha y hora
+        function restoreOriginalValues(id) {
+            document.getElementById('fecha-' + id).value = originalFecha[id];
+            document.getElementById('horario-' + id).value = originalHorario[id];
+        }
+
+        // Restaurar los valores originales cuando se cierra el modal
+        $('.modal').on('hidden.bs.modal', function () {
+            var id = $(this).attr('id').replace('modifyModal', '');
+            restoreOriginalValues(id);
+        });
+
+        // Limpia el mensaje de error al cerrar el modal
+        $('.modal').on('hidden.bs.modal', function () {
+            $(this).find('.alert-danger').remove();
+        });
     </script>
 </body>
 </html>
-

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Time;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,16 @@ public class ZumbaController {
                                 @RequestParam("fecha") String fecha,
                                 @RequestParam("horario") String horario, 
                                 Model model) {
+        if (fecha == null || fecha.isEmpty()) {
+            model.addAttribute("error", "La fecha es obligatoria.");
+            model.addAttribute("showModal", true);
+            return zumba(model);
+        }
+        if (horario == null || horario.isEmpty()) {
+            model.addAttribute("error", "El horario es obligatorio.");
+            model.addAttribute("showModal", true);
+            return zumba(model);
+        }
         return validateAndAddClass(userId, clase, fecha, horario, model, "Zumba");
     }
 
@@ -63,6 +75,16 @@ public class ZumbaController {
                                    @RequestParam("fecha") String fecha,
                                    @RequestParam("horario") String horario, 
                                    Model model) {
+        if (fecha == null || fecha.isEmpty()) {
+            model.addAttribute("error", "La fecha es obligatoria.");
+            model.addAttribute("showModal", true);
+            return spinning(model);
+        }
+        if (horario == null || horario.isEmpty()) {
+            model.addAttribute("error", "El horario es obligatorio.");
+            model.addAttribute("showModal", true);
+            return spinning(model);
+        }
         return validateAndAddClass(userId, clase, fecha, horario, model, "Spinning");
     }
 
@@ -72,6 +94,16 @@ public class ZumbaController {
                                     @RequestParam("fecha") String fecha,
                                     @RequestParam("horario") String horario, 
                                     Model model) {
+        if (fecha == null || fecha.isEmpty()) {
+            model.addAttribute("error", "La fecha es obligatoria.");
+            model.addAttribute("showModal", true);
+            return aerobicos(model);
+        }
+        if (horario == null || horario.isEmpty()) {
+            model.addAttribute("error", "El horario es obligatorio.");
+            model.addAttribute("showModal", true);
+            return aerobicos(model);
+        }
         return validateAndAddClass(userId, clase, fecha, horario, model, "Aerobicos");
     }
 
@@ -88,7 +120,7 @@ public class ZumbaController {
         }
 
         java.sql.Date sqlFecha = java.sql.Date.valueOf(fecha);
-        java.sql.Time sqlHorario = java.sql.Time.valueOf(horario.length() == 5 ? horario + ":00" : horario);
+        java.sql.Time sqlHorario = convertStringToTime(horario);
         
         boolean classExists = classes.stream()
                                      .anyMatch(zumbaClass -> zumbaClass.getFecha().equals(sqlFecha) &&
@@ -105,15 +137,11 @@ public class ZumbaController {
 
     private String addClass(int userId, String clase, String fecha, String horario, Model model, String expectedClassName) {
         try {
-            if (horario.length() == 5) {
-                horario = horario + ":00";
-            }
-
             Zumba zumba = new Zumba();
             zumba.setIdUsuario(userId);
             zumba.setClase(expectedClassName);
             zumba.setFecha(java.sql.Date.valueOf(fecha));
-            zumba.setHorario(java.sql.Time.valueOf(horario));
+            zumba.setHorario(convertStringToTime(horario));
             zumba.setEstado(true);
             zumbaService.save(zumba);
 
@@ -146,4 +174,89 @@ public class ZumbaController {
         zumbaService.delete(idReserva);
         return "redirect:/aerobicos";
     }
+
+    @PostMapping("/modifyZumbaClass")
+    public String modifyZumbaClass(@RequestParam("id_reserva") int idReserva,
+                                   @RequestParam("fecha") String fecha,
+                                   @RequestParam("horario") String horario,
+                                   Model model) {
+        Zumba zumba = zumbaService.getById(idReserva);
+        if (zumba != null) {
+            try {
+                zumba.setFecha(Date.valueOf(fecha));
+                zumba.setHorario(convertStringToTime(horario));
+                zumbaService.save(zumba);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
+                model.addAttribute("showModifyModal", idReserva);
+                model.addAttribute("zumbaClasses", zumbaService.listAll()
+                                                                 .stream()
+                                                                 .filter(zumbaClass -> "Zumba".equalsIgnoreCase(zumbaClass.getClase()))
+                                                                 .collect(Collectors.toList()));
+                return "zumba";
+            }
+        }
+        return "redirect:/zumba";
+    }
+
+    @PostMapping("/modifySpinningClass")
+    public String modifySpinningClass(@RequestParam("id_reserva") int idReserva,
+                                      @RequestParam("fecha") String fecha,
+                                      @RequestParam("horario") String horario,
+                                      Model model) {
+        Zumba spinning = zumbaService.getById(idReserva);
+        if (spinning != null) {
+            try {
+                spinning.setFecha(Date.valueOf(fecha));
+                spinning.setHorario(convertStringToTime(horario));
+                zumbaService.save(spinning);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
+                model.addAttribute("showModifyModal", idReserva);
+                model.addAttribute("spinningClasses", zumbaService.listAll()
+                                                                  .stream()
+                                                                  .filter(zumbaClass -> "Spinning".equalsIgnoreCase(zumbaClass.getClase()))
+                                                                  .collect(Collectors.toList()));
+                return "spinning";
+            }
+        }
+        return "redirect:/spinning";
+    }
+
+    @PostMapping("/modifyAerobicosClass")
+    public String modifyAerobicosClass(@RequestParam("id_reserva") int idReserva,
+                                       @RequestParam("fecha") String fecha,
+                                       @RequestParam("horario") String horario,
+                                       Model model) {
+        Zumba aerobicos = zumbaService.getById(idReserva);
+        if (aerobicos != null) {
+            try {
+                aerobicos.setFecha(Date.valueOf(fecha));
+                aerobicos.setHorario(convertStringToTime(horario));
+                zumbaService.save(aerobicos);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
+                model.addAttribute("showModifyModal", idReserva);
+                model.addAttribute("aerobicosClasses", zumbaService.listAll()
+                                                                   .stream()
+                                                                   .filter(zumbaClass -> "Aerobicos".equalsIgnoreCase(zumbaClass.getClase()))
+                                                                   .collect(Collectors.toList()));
+                return "aerobicos";
+            }
+        }
+        return "redirect:/aerobicos";
+    }
+
+    private Time convertStringToTime(String timeString) {
+        try {
+            if (timeString.length() == 5) {
+                timeString = timeString + ":00";
+            }
+            return Time.valueOf(timeString);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Formato de horario incorrecto. Falta fecha o hora'.");
+        }
+    }
 }
+
+

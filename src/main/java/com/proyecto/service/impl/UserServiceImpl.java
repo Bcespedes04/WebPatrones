@@ -57,20 +57,9 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmail(email) != null;
     }
     
-    @Transactional(readOnly = true)
-    public User getUser(long id) {
-        return userDao.findById(id).orElse(null);
+    @Override
+    public List<User> getUsersByRole(String role) {
+        return userDao.findByRolNombreRol(role);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 

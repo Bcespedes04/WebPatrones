@@ -71,7 +71,7 @@ public class LoginController {
         user.setActivo(true);
 
         Rol rol = new Rol();
-        rol.setIdRol(2); // Asumiendo que 2 es el rol de cliente
+        rol.setIdRol(2);
         user.setRol(rol);
 
         userService.save(user);
@@ -120,4 +120,3 @@ public class LoginController {
         return "redirect:/login";
     }
 }
-

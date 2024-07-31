@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Progreso Cliente - Gym</title>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Mi Seguimiento de Progreso</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Peso</th>
+                    <th>IMC</th>
+                    <th>Altura</th>
+                    <th>Objetivo Cumplido</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="progreso : ${progresos}">
+                    <td th:text="${progreso.fecha}"></td>
+                    <td th:text="${progreso.peso}"></td>
+                    <td th:text="${progreso.imc}"></td>
+                    <td th:text="${progreso.altura}"></td>
+                    <td th:text="${progreso.objetivoCumplido ? 'Sí' : 'No'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+</body>
+</html>
+

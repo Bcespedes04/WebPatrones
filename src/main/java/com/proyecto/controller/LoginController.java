@@ -1,5 +1,6 @@
 package com.proyecto.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.domain.Rol;
 import com.proyecto.domain.User;
 import com.proyecto.service.FirebaseStorageService;
@@ -14,6 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @SessionAttributes("user")
@@ -40,6 +46,10 @@ public class LoginController {
         User user = userService.validateUser(email, password);
         if (user != null) {
             model.addAttribute("user", user);
+
+            // Guardar el user.id y el nombre en un archivo JSON
+            guardarUserIdEnJson(user.getIdUsuario(), user.getNombreUsuario());
+
             return "redirect:/principal";
         } else {
             model.addAttribute("status", "error");
@@ -118,6 +128,21 @@ public class LoginController {
     public String logout(SessionStatus status) {
         status.setComplete();
         return "redirect:/login";
+    }
+
+    // Método para guardar el user.id y el nombre en un archivo JSON
+    private void guardarUserIdEnJson(Long userId, String nombreUsuario) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", userId);
+        data.put("name", nombreUsuario);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Guardar en src/main/resources/static/userData.json
+            objectMapper.writeValue(new File("src/main/resources/static/userData.json"), data);
+        } catch (IOException e) {
+            e.printStackTrace(); // Manejo básico de excepciones, podría mejorarse para producción
+        }
     }
 }
 

@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Gym</title>
-    
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
@@ -34,33 +32,41 @@
             </div>
         </div>
     </div>
-    
+
     <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
-    
+    <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/rutinas.js}"></script>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
             event.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({ email, password }),
-            });
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ email, password }),
+                });
 
-            const data = await response.json();
-            if (data.status === 'success') {
-                localStorage.setItem('id_usuario', data.id_usuario);
-                window.location.href = '/principal';
-            } else {
-                alert(data.message);
+                const data = await response.json();
+                if (response.ok) {
+                    if (data.status === 'success' && data.id_usuario) {
+                        localStorage.setItem('id_usuario', data.id_usuario);
+                        window.location.href = '/principal';
+                    } else {
+                        alert(data.message || 'Error desconocido');
+                    }
+                } else {
+                    alert('Error en la solicitud: ' + response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error inesperado');
             }
         });
     </script>

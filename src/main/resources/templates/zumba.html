@@ -27,7 +27,7 @@
         }
         .main-content {
             padding: 50px;
-            padding-bottom: 100px; /* Agregar padding inferior de 50 píxeles */
+            padding-bottom: 100px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -169,61 +169,6 @@
             <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
         </div>
     </div>
-    
-    <script>
-        document.getElementById('zumbaForm').addEventListener('submit', function(event) {
-            const idUsuario = localStorage.getItem('id_usuario');
-            if (!idUsuario) {
-                alert('No se encontró el ID del usuario en memoria. Por favor, inicie sesión nuevamente.');
-                event.preventDefault();
-                return;
-            }
-
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'id_usuario';
-            hiddenInput.value = idUsuario;
-
-            this.appendChild(hiddenInput);
-        });
-
-        // Mostrar el modal si hay un error al modificar
-        window.onload = function() {
-            const showModifyModal = /*[[${showModifyModal}]]*/ 'null';
-            if (showModifyModal !== 'null') {
-                const modal = new bootstrap.Modal(document.getElementById('modifyModal' + showModifyModal));
-                modal.show();
-            }
-        };
-
-        // Variables para almacenar los valores originales de fecha y hora
-        var originalFecha = {};
-        var originalHorario = {};
-
-        // Función para almacenar los valores originales de fecha y hora
-        function storeOriginalValues(id) {
-            originalFecha[id] = document.getElementById('fecha-' + id).value;
-            originalHorario[id] = document.getElementById('horario-' + id).value;
-        }
-
-        // Función para restaurar los valores originales de fecha y hora
-        function restoreOriginalValues(id) {
-            document.getElementById('fecha-' + id).value = originalFecha[id];
-            document.getElementById('horario-' + id).value = originalHorario[id];
-        }
-
-        // Restaurar los valores originales cuando se cierra el modal
-        $('.modal').on('hidden.bs.modal', function () {
-            var id = $(this).attr('id').replace('modifyModal', '');
-            restoreOriginalValues(id);
-        });
-
-        // Limpia el mensaje de error al cerrar el modal
-        $('.modal').on('hidden.bs.modal', function () {
-            $(this).find('.alert-danger').remove();
-        });
-    </script>
 </body>
 </html>
-
 

@@ -57,9 +57,23 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmail(email) != null;
     }
     
-    @Override
+    @Transactional(readOnly = true)
+    public User getUser(long id) {
+        return userDao.findById(id).orElse(null);
+    }
+
     public List<User> getUsersByRole(String role) {
-        return userDao.findByRolNombreRol(role);
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
+
+
+
+
+
+
+
+
+
+
 

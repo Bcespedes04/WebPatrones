@@ -1,5 +1,6 @@
 package com.proyecto.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.domain.Zumba;
 import com.proyecto.service.ZumbaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -51,11 +55,12 @@ public class ZumbaController {
     }
 
     @PostMapping("/addZumbaClass")
-    public String addZumbaClass(@RequestParam("id_usuario") int userId,
-                                @RequestParam("clase") String clase,
+    public String addZumbaClass(@RequestParam("clase") String clase,
                                 @RequestParam("fecha") String fecha,
                                 @RequestParam("horario") String horario, 
                                 Model model) {
+        int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
+
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
             model.addAttribute("showModal", true);
@@ -70,11 +75,12 @@ public class ZumbaController {
     }
 
     @PostMapping("/addSpinningClass")
-    public String addSpinningClass(@RequestParam("id_usuario") int userId,
-                                   @RequestParam("clase") String clase,
+    public String addSpinningClass(@RequestParam("clase") String clase,
                                    @RequestParam("fecha") String fecha,
                                    @RequestParam("horario") String horario, 
                                    Model model) {
+        int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
+
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
             model.addAttribute("showModal", true);
@@ -89,11 +95,12 @@ public class ZumbaController {
     }
 
     @PostMapping("/addAerobicosClass")
-    public String addAerobicosClass(@RequestParam("id_usuario") int userId,
-                                    @RequestParam("clase") String clase,
+    public String addAerobicosClass(@RequestParam("clase") String clase,
                                     @RequestParam("fecha") String fecha,
                                     @RequestParam("horario") String horario, 
                                     Model model) {
+        int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
+
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
             model.addAttribute("showModal", true);
@@ -255,6 +262,28 @@ public class ZumbaController {
             return Time.valueOf(timeString);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Formato de horario incorrecto. Falta fecha o hora'.");
+        }
+    }
+
+    // Método privado para cargar el userId desde un archivo JSON
+    private int cargarUserIdDesdeJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Intentar encontrar el archivo en varias ubicaciones
+            File file = new File("src/main/resources/static/userData.json");
+
+            if (!file.exists()) {
+                file = new File("userData.json");  // Intentar en el directorio de trabajo
+            }
+
+            if (file.exists()) {
+                Map<String, Integer> data = objectMapper.readValue(file, Map.class);
+                return data.get("userId");
+            } else {
+                throw new RuntimeException("El archivo userData.json no existe.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error al leer el archivo userData.json", e);
         }
     }
 }

@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Gym</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
     <div class="login-background">
         <div class="login-container">
             <div class="logo">
-                <img th:src="@{/img/logo.png}" alt="Logo Gym">
+                <img src="path/to/your/logo.png" alt="Logo Gym">
             </div>
             <h2>INICIO SESIÓN</h2>
             <form id="loginForm">
@@ -24,7 +22,7 @@
                     <label for="password">CONTRASEÑA</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-warning btn-block">INICIO</button>
+                <button type="submit" class="btn btn-primary btn-block">INICIO</button>
                 <div class="form-group">
                     <a href="#" class="forgot-password">No recuerdo mis datos de ingreso</a>
                 </div>
@@ -34,34 +32,41 @@
             </div>
         </div>
     </div>
-    <!-- JQuery -->
+
     <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
-    <!-- Popper.js -->
     <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <!-- Bootstrap JS -->
     <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
-    <!-- Custom JS -->
     <script th:src="@{/js/rutinas.js}"></script>
+
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
             event.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({ email, password }),
-            });
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ email, password }),
+                });
 
-            const data = await response.json();
-            if (data.status === 'success') {
-                localStorage.setItem('id_usuario', data.id_usuario);
-                window.location.href = '/principal';
-            } else {
-                alert(data.message);
+                const data = await response.json();
+                if (response.ok) {
+                    if (data.status === 'success' && data.id_usuario) {
+                        localStorage.setItem('id_usuario', data.id_usuario);
+                        window.location.href = '/principal';
+                    } else {
+                        alert(data.message || 'Error desconocido');
+                    }
+                } else {
+                    alert('Error en la solicitud: ' + response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error inesperado');
             }
         });
     </script>

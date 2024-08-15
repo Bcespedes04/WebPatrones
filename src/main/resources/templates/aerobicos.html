@@ -172,6 +172,14 @@
     </div>
     
     <script>
+        // Cargar el id_usuario desde el JSON al localStorage
+        fetch('/js/userData.json')
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('id_usuario', data.userId);
+            })
+            .catch(error => console.error('Error al cargar el JSON:', error));
+
         document.getElementById('aerobicosForm').addEventListener('submit', function(event) {
             const idUsuario = localStorage.getItem('id_usuario');
             if (!idUsuario) {

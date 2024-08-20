@@ -61,10 +61,6 @@ public class UserServiceImpl implements UserService {
     public User getUser(long id) {
         return userDao.findById(id).orElse(null);
     }
-
-    public List<User> getUsersByRole(String role) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }
 
 

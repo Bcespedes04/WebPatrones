@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modificar Progreso - Gym</title>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="bg-dark text-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-warning mt-4 text-center">Modificar Progreso</h1>
+                <form th:action="@{/progreso/edit}" method="post" class="mt-4" onsubmit="return validateObjective();">
+                    <input type="hidden" name="idProgreso" th:value="${progreso.idProgreso}"/>
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" class="form-control bg-dark text-light" id="fecha" name="fecha" th:value="${progreso.fecha}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" class="form-control bg-dark text-light" id="peso" name="peso" th:value="${progreso.peso}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura (cm)</label>
+                        <input type="number" class="form-control bg-dark text-light" id="altura" name="altura" th:value="${progreso.altura}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Objetivo Cumplido</label><br>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" id="objetivoCumplidoSi" name="objetivoCumplido" th:value="true" th:checked="${progreso.objetivoCumplido == true}" required>
+                            <label class="form-check-label" for="objetivoCumplidoSi">Sí</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" id="objetivoCumplidoNo" name="objetivoCumplido" th:value="false" th:checked="${progreso.objetivoCumplido == false}">
+                            <label class="form-check-label" for="objetivoCumplidoNo">No</label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-warning">Guardar</button>
+                        <a th:href="@{/progreso}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validateObjective() {
+            const si = document.getElementById('objetivoCumplidoSi').checked;
+            const no = document.getElementById('objetivoCumplidoNo').checked;
+
+            if (!si && !no) {
+                alert('Debe seleccionar si el objetivo está cumplido o no.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

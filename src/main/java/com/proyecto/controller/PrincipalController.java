@@ -46,4 +46,3 @@ public class PrincipalController {
         return "horarios";
     }
 }
-

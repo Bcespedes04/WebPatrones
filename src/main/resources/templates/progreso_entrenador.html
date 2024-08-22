@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seguimiento de Progreso de los Clientes - Gym</title>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-warning mt-4">Seguimiento de Progreso de los Clientes</h1>
+        <table class="table table-dark table-hover mt-4">
+            <thead class="thead-light">
+                <tr>
+                    <th>ID Cliente</th>
+                    <th>Nombre Cliente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.idUsuario}"></td>
+                    <td th:text="${cliente.nombreUsuario}"></td>
+                    <td>
+                        <a th:href="@{/progreso/add/{userId}(userId=${cliente.idUsuario})}" class="btn btn-warning btn-sm">Añadir Progreso</a>
+                        <a th:href="@{/progreso/edit/{idProgreso}(idProgreso=${cliente.idUsuario})}" class="btn btn-primary btn-sm">Modificar Progreso</a>
+                        <a th:href="@{/progreso/delete/{idProgreso}(idProgreso=${cliente.idUsuario})}" class="btn btn-danger btn-sm">Eliminar Progreso</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

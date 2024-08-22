@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Progreso - Gym</title>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="bg-dark text-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <h1 class="text-warning mt-4">Eliminar Progreso</h1>
+                <p class="text-light">¿Estás seguro de que deseas eliminar este progreso?</p>
+                <form th:action="@{/progreso/delete}" method="post" class="mt-4">
+                    <input type="hidden" name="idProgreso" th:value="${progreso.idProgreso}"/>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <a th:href="@{/progreso}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

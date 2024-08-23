@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface EventoService {
     List<Evento> getEventos();
-    Evento getEvento(int id);
+    Evento getEvento(Long id);
     void save(Evento evento);
-    void delete(int id);
+    void delete(Long id);
 }
 
 

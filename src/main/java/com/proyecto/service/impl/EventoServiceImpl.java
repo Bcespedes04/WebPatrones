@@ -19,7 +19,7 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
-    public Evento getEvento(int id) {
+    public Evento getEvento(Long id) {
         return eventoDao.findById(id).orElse(null);
     }
 
@@ -27,9 +27,8 @@ public class EventoServiceImpl implements EventoService {
     public void save(Evento evento) {
         eventoDao.save(evento);
     }
-    
-    @Override
-    public void delete(int id) {
+
+    public void delete(Long id) {
         eventoDao.deleteById(id);
     }
 

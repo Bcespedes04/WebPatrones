@@ -1,114 +1,178 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Evento - Gym</title>
-    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
-    <style>
-        .bottom-right {
-            position: fixed;
-            bottom: 100px; 
-            right: 20px;
-            margin-bottom: 10px;
-        }
-        .white-text {
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Logo Gym COSTA RICA</h1>
-        <nav>
+    <head>
+        <meta charset="UTF-8">
+        <title>Evento - Gym</title>
+        <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/estilos.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+        <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+        <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
+        <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+            .bottom-right {
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                margin-bottom: 10px;
+            }
+            .white-text {
+                color: white;
+            }
+            .main-content {
+                padding: 50px;
+                padding-bottom: 100px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            .class-list {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            .class-list ul {
+                padding-left: 0;
+            }
+            .class-list li {
+                list-style-type: none;
+                margin-bottom: 10px;
+            }
+            .footer {
+                background-color: #FFC107;
+                padding: 10px 0;
+                text-align: center;
+            }
+            .button-group {
+                display: flex;
+                gap: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Logo Gym COSTA RICA</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Tienda en Línea</a></li>
+                    <li><a href="#">Eventos</a></li>
+                    <li><a href="#">Noticias</a></li>
+                    <li><a href="/horarios">Horarios</a></li>
+                    <li><a href="#">Membresías</a></li>
+                    <li><a href="#">Progreso</a></li>
+                    <li class="dropdown user-icon-container">
+                        <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-person-circle user-icon"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" th:href="@{/update}">Actualizar Datos</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/login">Log Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="main-content">
+            <h1 class="white-text">Maraton</h1>
+            <p class="white-text">Selecciona el día y la hora en la que deseas participar en la maraton.</p>
+
+            <!-- Bloque de manejo de errores -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form id="maratonForm" action="/addmaratonClass" method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="white-text" for="nombre_evento">Evento</label>
+                        <input type="text" id="nombre_evento" name="nombre_evento" required class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="white-text" for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha" required class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="white-text" for="horario">Horario:</label>
+                        <input type="time" id="horario" name="horario" required class="form-control">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Agregar Evento</button>
+            </form>
+            
+            
+            <div class="class-list">
+            <h2 class="white-text">Eventos Disponibles</h2>
             <ul>
-                <li><a href="#">Sobre Nosotros</a></li>
-                <li><a href="#">Tienda en Línea</a></li>
-                <li><a href="#">Eventos</a></li>
-                <li><a href="#">Noticias</a></li>
-                <li><a href="/horarios">Horarios</a></li>
-                <li><a href="#">Membresías</a></li>
-                <li><a href="#">Progreso</a></li>
-                <li class="dropdown user-icon-container">
-                    <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-person-circle user-icon"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" th:href="@{/update}">Actualizar Datos</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/login">Log Out</a>
+                <li th:each="maratonClass : ${maratonClasses}">
+                    <span class="white-text" th:text="${maratonClass.nombreEvento} + ' - ' + ${#dates.format(maratonClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${maratonClass.horario}"></span>
+                    <div class="button-group">
+                        <form action="/registerMaratonClass" method="post" style="display:inline;">
+                            <input type="hidden" name="id_evento" th:value="${maratonClass.idEvento}">
+                            <button type="submit" class="btn btn-success">Registrarse</button>
+                        </form>
+                        <!-- Botón para mostrar el formulario de modificación -->
+                        <button type="button" class="btn btn-warning" data-toggle="modal" th:data-target="'#modifyModal' + ${maratonClass.idEvento}" onclick="storeOriginalValues(${zumbaClass.idReserva})">Modificar</button>
+                        <form action="/deleteMaratonClass" method="post" style="display:inline;">
+                            <input type="hidden" name="idEvento" th:value="${maratonClass.idEvento}">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+
+                    <!-- Modal para modificar la clase -->
+                    <div class="modal fade" th:id="'modifyModal' + ${maratonClass.idEvento}" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true"
+                         th:classappend="${showModifyModal} == ${maratonClass.idEvento} ? 'show d-block' : ''">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modifyModalLabel">Modificar Evento</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="modifyForm-${maratonClass.idEvento}" action="/modifyMaratonClass" method="post">
+                                        <input type="hidden" name="id_evento" th:value="${maratonClass.idEvento}">
+                                        <div class="form-group">
+                                            <label for="fecha" class="col-form-label">Fecha:</label>
+                                            <input type="date" class="form-control" id="fecha-${maratonClass.idEvento}" name="fecha" th:value="${maratonClass.fecha}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="horario" class="col-form-label">Horario:</label>
+                                            <input type="time" class="form-control" id="horario-${maratonClass.idEvento}" name="horario" th:value="${maratonClass.horario}">
+                                        </div>
+                                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                                            <span th:text="${error}"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="restoreOriginalValues(${maratonClass.idEvento})">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </li>
             </ul>
-        </nav>
-    </div>
-    <div class="main-content">
-        <h1 class="white-text">Maraton</h1>
-        <p class="white-text">Selecciona el día y la hora en la que deseas participar en la maraton.</p>
-
-        <!-- Bloque de manejo de errores -->
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <span th:text="${error}"></span>
-        </div>
-
-        <form id="maratonForm" action="/addmaratonClass" method="post">
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label class="white-text" for="clase">Evento</label>
-                    <input type="text" id="clase" name="clase" required class="form-control">
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="white-text" for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" name="fecha" required class="form-control">
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="white-text" for="horario">Horario:</label>
-                    <input type="time" id="horario" name="horario" required class="form-control">
-                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Agregar Evento</button>
-        </form>
-
-        <h2 class="white-text">Eventos Disponibles</h2>
-        <ul>
-            <li th:each="zumbaClass : ${maratonClasses}">
-                <span class="white-text" th:text="${zumbaClass.nombreEvento} + ' - ' + ${#dates.format(zumbaClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${zumbaClass.horario}"></span>
-                <form action="/deletemaraton" method="post" style="display:inline;">
-                    <input type="hidden" name="idEvento" th:value="${zumbaClass.idEvento}">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </li>
-        </ul>
-    </div>
-    <button class="btn btn-secondary bottom-right" onclick="location.href='/clases'">Regresar</button>
-    <div class="footer">
-        <p>&copy; 2024 Logo Gym. Todos los derechos reservados.</p>
-        <div>
-            <a href="#"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
-            <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
         </div>
-    </div>
-    
-    <script>
-        document.getElementById('maratonForm').addEventListener('submit', function(event) {
-            const idUsuario = localStorage.getItem('id_usuario');
-            if (!idUsuario) {
-                alert('No se encontró el ID del usuario en memoria. Por favor, inicie sesión nuevamente.');
-                event.preventDefault();
-                return;
-            }
-
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'id_usuario';
-            hiddenInput.value = idUsuario;
-
-            this.appendChild(hiddenInput);
-        });
-    </script>
-</body>
+        
+        
+        
+        <button class="btn btn-secondary bottom-right" onclick="location.href = '/competencias'">Regresar</button>
+        <div class="footer">
+            <p>&copy; 2024 Logo Gym. Todos los derechos reservados.</p>
+            <div>
+                <a href="#"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
+                <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
+            </div>
+        </div>
+    </body>
 </html>

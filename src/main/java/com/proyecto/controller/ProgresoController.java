@@ -58,13 +58,14 @@ public class ProgresoController {
 public String agregarProgreso(@ModelAttribute Progreso progreso, @RequestParam Long userId) {
     User cliente = userService.getUser(userId);
     if (cliente != null) {
-        progreso.setIdProgreso(userId);  
         progreso.setUser(cliente);
+        progreso.setIdProgreso(userId);  // Establecer id_progreso igual a id_usuario
         progreso.setImc(calcularIMC(progreso.getPeso(), progreso.getAltura()));
-        progresoService.save(progreso);
+        progresoService.save(progreso);  // Guarda el progreso en la base de datos
     }
     return "redirect:/progreso";
 }
+
 
 
 

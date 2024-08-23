@@ -40,8 +40,20 @@ public class Evento implements Serializable {
 
     @Column(name = "estado")
     private Boolean estado;
-    
+
     public int getId() {
         return this.idEvento;
+    }
+
+    public Evento() {
+    }
+
+    public Evento(int idEvento, User user, String nombreEvento, Date fecha, Time horario, Boolean estado) {
+        this.idEvento = idEvento;
+        this.user = user;
+        this.nombreEvento = nombreEvento;
+        this.fecha = fecha;
+        this.horario = horario;
+        this.estado = estado;
     }
 }

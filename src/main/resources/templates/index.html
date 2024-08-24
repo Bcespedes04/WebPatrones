@@ -5,7 +5,6 @@
     <title>Login - Gym</title>
     
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
@@ -26,7 +25,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">INICIO</button>
                 <div class="form-group">
-                    <a href="#" class="forgot-password">No recuerdo mis datos de ingreso</a>
+                    <a href="#" class="forgot-password" data-toggle="modal" data-target="#forgotPasswordModal">No recuerdo mis datos de ingreso</a>
                 </div>
             </form>
             <div class="form-group mt-3">
@@ -34,21 +33,64 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">Recuperar Contraseña</h5>
+                    <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label for="recovery-email">Ingrese su correo electrónico</label>
+                            <input type="email" class="form-control bg-dark text-light" id="recovery-email" name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-block">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript, jQuery y Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
-    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
-    
+    <!-- Archivo de JavaScript personalizado -->
     <script th:src="@{/js/rutinas.js}"></script>
+
+    <script>
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('recovery-email').value;
+
+            try {
+                const response = await fetch('/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ email })
+                });
+
+                if (response.ok) {
+                    alert('Se ha enviado un enlace de recuperación a su correo electrónico.');
+                    $('#forgotPasswordModal').modal('hide');
+                } else {
+                    alert('Hubo un error al procesar la solicitud. Por favor, intente nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error inesperado. Por favor, intente nuevamente.');
+            }
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 

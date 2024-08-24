@@ -1,3 +1,4 @@
+// Interfaz UserService
 package com.proyecto.service;
 
 import com.proyecto.domain.User;
@@ -10,15 +11,10 @@ public interface UserService {
     void save(User user);
     void delete(User user);
     boolean userExists(String email);
+
+    // Métodos para la recuperación de contraseñas
+    String initiatePasswordReset(String email);  // Cambiado a String
+    User getUserByToken(String token);
+    void updatePassword(User user, String newPassword);
 }
-
-
-
-
-
-
-
-
-
-
 

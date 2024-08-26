@@ -3,19 +3,20 @@ package com.proyecto.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.domain.Evento;
 import com.proyecto.service.EventoService;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Time;
+import java.sql.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class EventoController {
@@ -27,7 +28,7 @@ public class EventoController {
     public String maraton(Model model) {
         List<Evento> maratonClasses = eventoService.getEventos()
                 .stream()
-                .filter(maratonClass -> "maraton".equalsIgnoreCase(maratonClass.getNombreEvento()))
+                .filter(evento -> "Maraton".equalsIgnoreCase(evento.getNombreEvento()))
                 .collect(Collectors.toList());
         model.addAttribute("maratonClasses", maratonClasses);
         return "maraton";
@@ -37,7 +38,7 @@ public class EventoController {
     public String levantamientopesas(Model model) {
         List<Evento> levantamientopesasClasses = eventoService.getEventos()
                 .stream()
-                .filter(maratonClass -> "levantamientopesas".equalsIgnoreCase(maratonClass.getNombreEvento()))
+                .filter(evento -> "Levantamiento de Pesas".equalsIgnoreCase(evento.getNombreEvento()))
                 .collect(Collectors.toList());
         model.addAttribute("levantamientopesasClasses", levantamientopesasClasses);
         return "levantamientopesas";
@@ -47,19 +48,19 @@ public class EventoController {
     public String resistencia(Model model) {
         List<Evento> resistenciaClasses = eventoService.getEventos()
                 .stream()
-                .filter(Evento -> "resistencia".equalsIgnoreCase(Evento.getNombreEvento()))
+                .filter(evento -> "Resistencia".equalsIgnoreCase(evento.getNombreEvento()))
                 .collect(Collectors.toList());
         model.addAttribute("resistenciaClasses", resistenciaClasses);
         return "resistencia";
     }
 
-    @PostMapping("/addmaratonClass")
-    public String addmaratonClass(
-            @RequestParam("nombre_evento") String nombreEvento,
+    @PostMapping("/addMaratonClass")
+    public String addMaratonClass(@RequestParam("nombre_evento") String nombreEvento,
             @RequestParam("fecha") String fecha,
             @RequestParam("horario") String horario,
             Model model) {
-        int userId = cargarUserIdDesdeJson(); // Cargar el userId desde el JSON
+        int userId = cargarUserIdDesdeJson();
+
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
             model.addAttribute("showModal", true);
@@ -73,12 +74,12 @@ public class EventoController {
         return validateAndAddClass(userId, nombreEvento, fecha, horario, model, "Maraton");
     }
 
-    @PostMapping("/addlevantamientopesasClass")
-    public String addlevantamientopesasClass(@RequestParam("nombre_evento") String nombreEvento,
+    @PostMapping("/addLevantamientoPesasClass")
+    public String addLevantamientoPesasClass(@RequestParam("nombre_evento") String nombreEvento,
             @RequestParam("fecha") String fecha,
             @RequestParam("horario") String horario,
             Model model) {
-        int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
+        int userId = cargarUserIdDesdeJson();
 
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
@@ -90,15 +91,15 @@ public class EventoController {
             model.addAttribute("showModal", true);
             return levantamientopesas(model);
         }
-        return validateAndAddClass(userId, nombreEvento, fecha, horario, model, "levantamientopesas");
+        return validateAndAddClass(userId, nombreEvento, fecha, horario, model, "Levantamiento de Pesas");
     }
 
-    @PostMapping("/addresistenciaClass")
+    @PostMapping("/addResistenciaClass")
     public String addResistenciaClass(@RequestParam("nombre_evento") String nombreEvento,
             @RequestParam("fecha") String fecha,
             @RequestParam("horario") String horario,
             Model model) {
-        int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
+        int userId = cargarUserIdDesdeJson();
 
         if (fecha == null || fecha.isEmpty()) {
             model.addAttribute("error", "La fecha es obligatoria.");
@@ -116,7 +117,7 @@ public class EventoController {
     private String validateAndAddClass(int userId, String clase, String fecha, String horario, Model model, String expectedClassName) {
         List<Evento> classes = eventoService.getEventos()
                 .stream()
-                .filter(Evento -> expectedClassName.equalsIgnoreCase(Evento.getNombreEvento()))
+                .filter(evento -> expectedClassName.equalsIgnoreCase(evento.getNombreEvento()))
                 .collect(Collectors.toList());
 
         if (!clase.equalsIgnoreCase(expectedClassName)) {
@@ -126,11 +127,11 @@ public class EventoController {
         }
 
         java.sql.Date sqlFecha = java.sql.Date.valueOf(fecha);
-        java.sql.Time sqlHorario = java.sql.Time.valueOf(horario.length() == 5 ? horario + ":00" : horario);
+        java.sql.Time sqlHorario = convertStringToTime(horario);
 
         boolean classExists = classes.stream()
-                .anyMatch(Evento -> Evento.getFecha().equals(sqlFecha)
-                && Evento.getHorario().equals(sqlHorario));
+                .anyMatch(evento -> evento.getFecha().equals(sqlFecha)
+                && evento.getHorario().equals(sqlHorario));
 
         if (classExists) {
             model.addAttribute("error", "Ya hay una clase a esta hora.");
@@ -143,15 +144,11 @@ public class EventoController {
 
     private String addClass(int userId, String clase, String fecha, String horario, Model model, String expectedClassName) {
         try {
-            if (horario.length() == 5) {
-                horario = horario + ":00";
-            }
-
             Evento evento = new Evento();
-            evento.setIdEvento(userId);
-            evento.setNombreEvento(expectedClassName);
+            evento.setIdUsuario(userId);
+            evento.setNombreEvento(clase);
             evento.setFecha(java.sql.Date.valueOf(fecha));
-            evento.setHorario(java.sql.Time.valueOf(horario));
+            evento.setHorario(convertStringToTime(horario));
             evento.setEstado(true);
             eventoService.save(evento);
 
@@ -160,7 +157,7 @@ public class EventoController {
             model.addAttribute("error", "Formato de horario incorrecto. Debe ser 'hh:mm'.");
             List<Evento> classes = eventoService.getEventos()
                     .stream()
-                    .filter(Evento -> expectedClassName.equalsIgnoreCase(Evento.getNombreEvento()))
+                    .filter(evento -> expectedClassName.equalsIgnoreCase(evento.getNombreEvento()))
                     .collect(Collectors.toList());
             model.addAttribute(expectedClassName.toLowerCase() + "Classes", classes);
             return expectedClassName.toLowerCase();
@@ -168,19 +165,19 @@ public class EventoController {
     }
 
     @PostMapping("/deleteMaratonClass")
-    public String deletemaraton(@RequestParam("idEvento") int idEvento) {
+    public String deleteMaratonClass(@RequestParam("id_evento") int idEvento) {
         eventoService.delete(idEvento);
         return "redirect:/maraton";
     }
 
-    @PostMapping("/deletelevantamientopesas")
-    public String deletelevantamientopesas(@RequestParam("id_evento") int idEvento) {
+    @PostMapping("/deleteLevantamientoPesasClass")
+    public String deleteLevantamientoPesasClass(@RequestParam("id_evento") int idEvento) {
         eventoService.delete(idEvento);
         return "redirect:/levantamientopesas";
     }
 
-    @PostMapping("/deleteresistenciaClass")
-    public String deleteresistencia(@RequestParam("id_evento") int idEvento) {
+    @PostMapping("/deleteResistenciaClass")
+    public String deleteResistenciaClass(@RequestParam("id_evento") int idEvento) {
         eventoService.delete(idEvento);
         return "redirect:/resistencia";
     }
@@ -194,62 +191,59 @@ public class EventoController {
         if (maraton != null) {
             try {
                 maraton.setFecha(Date.valueOf(fecha));
-                maraton.setHorario(convertStringToTime(horario));
+                maraton.setHorario(Time.valueOf(horario + ":00"));
                 eventoService.save(maraton);
-            } catch (IllegalArgumentException e) {
-                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
-                model.addAttribute("showModifyModal", idEvento);
-                model.addAttribute("maratonClasses", eventoService.getEventos()
-                        .stream()
-                        .filter(maratonClass -> "maraton".equalsIgnoreCase(maratonClass.getNombreEvento()))
-                        .collect(Collectors.toList()));
-                return "maraton";
+                model.addAttribute("successMessage", "La clase de maratón ha sido modificada exitosamente.");
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Hubo un error al modificar la clase de maratón: " + e.getMessage());
             }
+        } else {
+            model.addAttribute("errorMessage", "No se encontró la clase de maratón especificada.");
         }
         return "redirect:/maraton";
     }
 
-    @PostMapping("/modifylevantamientopesas")
-    public String modifylevantamientopesasClass(@RequestParam("id_evento") int idEvento,
+    @PostMapping("/modifyLevantamientoPesasClass")
+    public String modifyLevantamientoPesasClass(@RequestParam("id_evento") int idEvento,
             @RequestParam("fecha") String fecha,
             @RequestParam("horario") String horario,
             Model model) {
-        Evento levantamientopesas = eventoService.getEvento(idEvento);
+        Evento levantamientopesas = eventoService.getEvento(idEvento); // Usar getEvento en lugar de getById
         if (levantamientopesas != null) {
             try {
                 levantamientopesas.setFecha(Date.valueOf(fecha));
                 levantamientopesas.setHorario(convertStringToTime(horario));
                 eventoService.save(levantamientopesas);
             } catch (IllegalArgumentException e) {
-                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
+                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora.");
                 model.addAttribute("showModifyModal", idEvento);
                 model.addAttribute("levantamientopesasClasses", eventoService.getEventos()
                         .stream()
-                        .filter(levantamientopesasClass -> "Aerobicos".equalsIgnoreCase(levantamientopesasClass.getNombreEvento()))
+                        .filter(evento -> "Levantamiento de Pesas".equalsIgnoreCase(evento.getNombreEvento()))
                         .collect(Collectors.toList()));
-                return "resistencia";
+                return "levantamientopesas";
             }
         }
-        return "redirect:/levantamientopesasClass";
+        return "redirect:/levantamientopesas";
     }
 
-    @PostMapping("/modifyresistenciaClass")
+    @PostMapping("/modifyResistenciaClass")
     public String modifyResistenciaClass(@RequestParam("id_evento") int idEvento,
             @RequestParam("fecha") String fecha,
             @RequestParam("horario") String horario,
             Model model) {
-        Evento resistencia = eventoService.getEvento(idEvento);
+        Evento resistencia = eventoService.getEvento(idEvento); // Usar getEvento en lugar de getById
         if (resistencia != null) {
             try {
                 resistencia.setFecha(Date.valueOf(fecha));
                 resistencia.setHorario(convertStringToTime(horario));
                 eventoService.save(resistencia);
             } catch (IllegalArgumentException e) {
-                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
+                model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora.");
                 model.addAttribute("showModifyModal", idEvento);
                 model.addAttribute("resistenciaClasses", eventoService.getEventos()
                         .stream()
-                        .filter(resistenciaClass -> "Resistencia".equalsIgnoreCase(resistenciaClass.getNombreEvento()))
+                        .filter(evento -> "Resistencia".equalsIgnoreCase(evento.getNombreEvento()))
                         .collect(Collectors.toList()));
                 return "resistencia";
             }
@@ -264,19 +258,17 @@ public class EventoController {
             }
             return Time.valueOf(timeString);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Formato de horario incorrecto. Falta fecha o hora'.");
+            throw new IllegalArgumentException("Formato de horario incorrecto. Falta fecha o hora.");
         }
     }
 
-    // Método privado para cargar el userId desde un archivo JSON
     private int cargarUserIdDesdeJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            // Intentar encontrar el archivo en varias ubicaciones
             File file = new File("src/main/resources/static/userData.json");
 
             if (!file.exists()) {
-                file = new File("userData.json");  // Intentar en el directorio de trabajo
+                file = new File("userData.json");
             }
 
             if (file.exists()) {
@@ -289,5 +281,4 @@ public class EventoController {
             throw new RuntimeException("Error al leer el archivo userData.json", e);
         }
     }
-
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Clases Registradas - Zumba</title>
+        <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/css/estilos.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+        <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+        <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
+        <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+            .white-text {
+                color: white;
+            }
+            .main-content {
+                padding: 50px;
+                padding-bottom: 100px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            .class-list {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            .class-list ul {
+                padding-left: 0;
+            }
+            .class-list li {
+                list-style-type: none;
+                margin-bottom: 10px;
+            }
+            .footer {
+                background-color: #FFC107;
+                padding: 10px 0;
+                text-align: center;
+            }
+            .bottom-left {
+                position: fixed;
+                bottom: 100px;
+                right: 20px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Logo Gym COSTA RICA</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Tienda en Línea</a></li>
+                    <li><a href="#">Eventos</a></li>
+                    <li><a href="/horarios">Horarios</a></li>
+                    <li><a href="#">Membresías</a></li>
+                    <li><a href="#">Progreso</a></li>
+                    <li class="dropdown user-icon-container">
+                        <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-person-circle user-icon"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" th:href="@{/update}">Actualizar Datos</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/login">Log Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="main-content">
+            <h1 class="white-text">Clases Registradas</h1>
+            <div class="class-list">
+                <ul>
+                    <li th:each="asistencia : ${asistencias}">
+                        <span class="white-text" th:text="${asistencia.clase} + ' - ' + ${#dates.format(asistencia.fecha, 'yyyy-MM-dd')} + ' - ' + asistencia.horario"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button class="btn btn-secondary bottom-left" onclick="location.href = '/zumba'">Regresar</button>
+        <div class="footer">
+            <p>&copy; 2024 Logo Gym. Todos los derechos reservados.</p>
+            <div>
+                <a href="#"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
+                <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
+            </div>
+        </div>
+    </body>
+</html>

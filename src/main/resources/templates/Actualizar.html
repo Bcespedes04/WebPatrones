@@ -32,7 +32,7 @@
         </div>
         <section style="background-color: #403A39;">
             <h2 style="color: #ffffff">Editar Perfil de miembro</h2>
-            <div class="row">
+            <div class="row justify-content-center">
                 <form th:action="@{/guardar}" 
                       th:object="${user}"
                       method="POST" 
@@ -45,44 +45,36 @@
                         <div class="position-absolute top-50 start-50 translate-middle"></div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.nombreUsuario}]]</span>
+                            <span class="input-group-text">Nombre de Usuario</span>
                             <input class="form-control" type="text" 
                                    name="nombreUsuario" th:field="*{nombreUsuario}"
                                    required="true"/>
                         </div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.genero}]]</span>
+                            <span class="input-group-text">Género</span>
                             <select class="form-select" name="genero" th:field="*{genero}">
-                                <option value="Masculino" th:text="#{user.generoMasculino}">Masculino</option>
-                                <option value="Femenino" th:text="#{user.generoFemenino}">Femenino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
                             </select>
                         </div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.id}]]</span>
-                            <input class="form-control" type="text" 
-                                   id="idUsuario" name="idUsuario" 
-                                   th:field="*{idUsuario}" 
-                                   readonly="readonly"/>
-                        </div>
-
-                        <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.email}]]</span>
+                            <span class="input-group-text">Correo Electrónico</span>
                             <input class="form-control" type="text" 
                                    name="email" th:field="*{email}"
                                    readonly="readonly"/>
                         </div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.password}]]</span>
+                            <span class="input-group-text">Contraseña</span>
                             <input class="form-control" type="password" 
                                    name="password" th:field="*{password}"
                                    readonly="readonly"/>
                         </div>
 
                         <div class="input-group">
-                            <span class="input-group-text">[[#{user.direccion}]]</span>
+                            <span class="input-group-text">Dirección</span>
                             <input class="form-control" type="text" 
                                    name="direccion" th:field="*{direccion}"
                                    required="true"/>
@@ -101,21 +93,21 @@
                         </div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.telefono}]]</span>
+                            <span class="input-group-text">Teléfono</span>
                             <input class="form-control" type="number" 
                                    name="telefono" th:field="*{telefono}"
                                    required="true" />
                         </div>
 
                         <div class="input-group mb-5">
-                            <span class="input-group-text">[[#{user.fecha}]]</span>
+                            <span class="input-group-text">Fecha de Nacimiento</span>
                             <input class="form-control" type="date" 
                                    name="fechaNacimiento" th:field="*{fechaNacimiento}"
                                    required="false"/>
                         </div>
 
                         <div class="mb-3">
-                            <label for="imagen">[[#{producto.imagen}]]</label>
+                            <label for="imagen">Imagen</label>
                             <input class="form-control" type="file" name="imagenFile"
                                    onchange="readURL(this);" />
                             <img id="blah" th:src="@{${user.rutaImagen}}" alt="your image" height="200"/>
@@ -123,7 +115,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">[[#{user.actualizar}]]</button>
+                        <button class="btn btn-primary" type="submit">Actualizar</button>
                     </div>
                 </form>
             </div>

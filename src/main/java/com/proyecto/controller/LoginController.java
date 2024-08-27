@@ -153,7 +153,7 @@ public class LoginController {
         } else {
             model.addAttribute("error", "No se encontró una cuenta con ese correo electrónico.");
         }
-        return "index";
+        return "reset_password";
     }
 
     @GetMapping("/reset-password")

@@ -1,5 +1,4 @@
-    package com.proyecto.service;
-
+package com.proyecto.service;
 import com.proyecto.domain.Evento;
 import java.util.List;
 
@@ -9,7 +8,6 @@ public interface EventoService {
     void save(Evento evento);
     void delete(int id);
 }
-
 
 
 

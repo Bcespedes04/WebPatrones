@@ -27,9 +27,9 @@ public class ZumbaController {
     @GetMapping("/zumba")
     public String zumba(Model model) {
         List<Zumba> zumbaClasses = zumbaService.listAll()
-                                                .stream()
-                                                .filter(zumbaClass -> "Zumba".equalsIgnoreCase(zumbaClass.getClase()))
-                                                .collect(Collectors.toList());
+                .stream()
+                .filter(zumbaClass -> "Zumba".equalsIgnoreCase(zumbaClass.getClase()))
+                .collect(Collectors.toList());
         model.addAttribute("zumbaClasses", zumbaClasses);
         return "zumba";
     }
@@ -37,9 +37,9 @@ public class ZumbaController {
     @GetMapping("/spinning")
     public String spinning(Model model) {
         List<Zumba> spinningClasses = zumbaService.listAll()
-                                                  .stream()
-                                                  .filter(zumbaClass -> "Spinning".equalsIgnoreCase(zumbaClass.getClase()))
-                                                  .collect(Collectors.toList());
+                .stream()
+                .filter(zumbaClass -> "Spinning".equalsIgnoreCase(zumbaClass.getClase()))
+                .collect(Collectors.toList());
         model.addAttribute("spinningClasses", spinningClasses);
         return "spinning";
     }
@@ -47,18 +47,24 @@ public class ZumbaController {
     @GetMapping("/aerobicos")
     public String aerobicos(Model model) {
         List<Zumba> aerobicosClasses = zumbaService.listAll()
-                                                   .stream()
-                                                   .filter(zumbaClass -> "Aerobicos".equalsIgnoreCase(zumbaClass.getClase()))
-                                                   .collect(Collectors.toList());
+                .stream()
+                .filter(zumbaClass -> "Aerobicos".equalsIgnoreCase(zumbaClass.getClase()))
+                .collect(Collectors.toList());
         model.addAttribute("aerobicosClasses", aerobicosClasses);
         return "aerobicos";
     }
 
+    @GetMapping("/asistencia")
+    public String asistencia(Model model) {
+        // Aquí puedes añadir lógica si necesitas enviar datos al modelo.
+        return "asistencia"; // Nombre del template HTML en templates/asistencia.html
+    }
+
     @PostMapping("/addZumbaClass")
     public String addZumbaClass(@RequestParam("clase") String clase,
-                                @RequestParam("fecha") String fecha,
-                                @RequestParam("horario") String horario, 
-                                Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
 
         if (fecha == null || fecha.isEmpty()) {
@@ -76,9 +82,9 @@ public class ZumbaController {
 
     @PostMapping("/addSpinningClass")
     public String addSpinningClass(@RequestParam("clase") String clase,
-                                   @RequestParam("fecha") String fecha,
-                                   @RequestParam("horario") String horario, 
-                                   Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
 
         if (fecha == null || fecha.isEmpty()) {
@@ -96,9 +102,9 @@ public class ZumbaController {
 
     @PostMapping("/addAerobicosClass")
     public String addAerobicosClass(@RequestParam("clase") String clase,
-                                    @RequestParam("fecha") String fecha,
-                                    @RequestParam("horario") String horario, 
-                                    Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         int userId = cargarUserIdDesdeJson();  // Cargar el userId desde el JSON
 
         if (fecha == null || fecha.isEmpty()) {
@@ -116,9 +122,9 @@ public class ZumbaController {
 
     private String validateAndAddClass(int userId, String clase, String fecha, String horario, Model model, String expectedClassName) {
         List<Zumba> classes = zumbaService.listAll()
-                                          .stream()
-                                          .filter(zumbaClass -> expectedClassName.equalsIgnoreCase(zumbaClass.getClase()))
-                                          .collect(Collectors.toList());
+                .stream()
+                .filter(zumbaClass -> expectedClassName.equalsIgnoreCase(zumbaClass.getClase()))
+                .collect(Collectors.toList());
 
         if (!clase.equalsIgnoreCase(expectedClassName)) {
             model.addAttribute("error", "Nombre de clase incorrecto. Debe ser '" + expectedClassName + "'.");
@@ -128,11 +134,11 @@ public class ZumbaController {
 
         java.sql.Date sqlFecha = java.sql.Date.valueOf(fecha);
         java.sql.Time sqlHorario = convertStringToTime(horario);
-        
+
         boolean classExists = classes.stream()
-                                     .anyMatch(zumbaClass -> zumbaClass.getFecha().equals(sqlFecha) &&
-                                                             zumbaClass.getHorario().equals(sqlHorario));
-        
+                .anyMatch(zumbaClass -> zumbaClass.getFecha().equals(sqlFecha)
+                && zumbaClass.getHorario().equals(sqlHorario));
+
         if (classExists) {
             model.addAttribute("error", "Ya hay una clase a esta hora.");
             model.addAttribute(expectedClassName.toLowerCase() + "Classes", classes);
@@ -152,13 +158,14 @@ public class ZumbaController {
             zumba.setEstado(true);
             zumbaService.save(zumba);
 
+            // Redireccionar a la página correcta basado en el nombre de la clase
             return "redirect:/" + expectedClassName.toLowerCase();
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", "Formato de horario incorrecto. Debe ser 'hh:mm'.");
             List<Zumba> classes = zumbaService.listAll()
-                                              .stream()
-                                              .filter(zumbaClass -> expectedClassName.equalsIgnoreCase(zumbaClass.getClase()))
-                                              .collect(Collectors.toList());
+                    .stream()
+                    .filter(zumbaClass -> expectedClassName.equalsIgnoreCase(zumbaClass.getClase()))
+                    .collect(Collectors.toList());
             model.addAttribute(expectedClassName.toLowerCase() + "Classes", classes);
             return expectedClassName.toLowerCase();
         }
@@ -184,9 +191,9 @@ public class ZumbaController {
 
     @PostMapping("/modifyZumbaClass")
     public String modifyZumbaClass(@RequestParam("id_reserva") int idReserva,
-                                   @RequestParam("fecha") String fecha,
-                                   @RequestParam("horario") String horario,
-                                   Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         Zumba zumba = zumbaService.getById(idReserva);
         if (zumba != null) {
             try {
@@ -197,9 +204,9 @@ public class ZumbaController {
                 model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
                 model.addAttribute("showModifyModal", idReserva);
                 model.addAttribute("zumbaClasses", zumbaService.listAll()
-                                                                 .stream()
-                                                                 .filter(zumbaClass -> "Zumba".equalsIgnoreCase(zumbaClass.getClase()))
-                                                                 .collect(Collectors.toList()));
+                        .stream()
+                        .filter(zumbaClass -> "Zumba".equalsIgnoreCase(zumbaClass.getClase()))
+                        .collect(Collectors.toList()));
                 return "zumba";
             }
         }
@@ -208,9 +215,9 @@ public class ZumbaController {
 
     @PostMapping("/modifySpinningClass")
     public String modifySpinningClass(@RequestParam("id_reserva") int idReserva,
-                                      @RequestParam("fecha") String fecha,
-                                      @RequestParam("horario") String horario,
-                                      Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         Zumba spinning = zumbaService.getById(idReserva);
         if (spinning != null) {
             try {
@@ -221,9 +228,9 @@ public class ZumbaController {
                 model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
                 model.addAttribute("showModifyModal", idReserva);
                 model.addAttribute("spinningClasses", zumbaService.listAll()
-                                                                  .stream()
-                                                                  .filter(zumbaClass -> "Spinning".equalsIgnoreCase(zumbaClass.getClase()))
-                                                                  .collect(Collectors.toList()));
+                        .stream()
+                        .filter(zumbaClass -> "Spinning".equalsIgnoreCase(zumbaClass.getClase()))
+                        .collect(Collectors.toList()));
                 return "spinning";
             }
         }
@@ -232,9 +239,9 @@ public class ZumbaController {
 
     @PostMapping("/modifyAerobicosClass")
     public String modifyAerobicosClass(@RequestParam("id_reserva") int idReserva,
-                                       @RequestParam("fecha") String fecha,
-                                       @RequestParam("horario") String horario,
-                                       Model model) {
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horario") String horario,
+            Model model) {
         Zumba aerobicos = zumbaService.getById(idReserva);
         if (aerobicos != null) {
             try {
@@ -245,9 +252,9 @@ public class ZumbaController {
                 model.addAttribute("error", "Formato de horario incorrecto. Falta fecha o hora'.");
                 model.addAttribute("showModifyModal", idReserva);
                 model.addAttribute("aerobicosClasses", zumbaService.listAll()
-                                                                   .stream()
-                                                                   .filter(zumbaClass -> "Aerobicos".equalsIgnoreCase(zumbaClass.getClase()))
-                                                                   .collect(Collectors.toList()));
+                        .stream()
+                        .filter(zumbaClass -> "Aerobicos".equalsIgnoreCase(zumbaClass.getClase()))
+                        .collect(Collectors.toList()));
                 return "aerobicos";
             }
         }
@@ -287,5 +294,3 @@ public class ZumbaController {
         }
     }
 }
-
-

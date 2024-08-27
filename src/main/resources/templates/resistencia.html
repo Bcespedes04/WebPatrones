@@ -2,21 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Evento - Gym</title>
-    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <title>Evento de Resistencia - Gym</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js}"></script>
-    <script th:src="@{https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #2c3e50;
+        }
         .bottom-right {
             position: fixed;
-            bottom: 100px; 
+            bottom: 100px;
             right: 20px;
             margin-bottom: 10px;
         }
         .white-text {
+            color: white;
+        }
+        .main-content {
+            padding: 50px;
+            padding-bottom: 100px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .class-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .class-list ul {
+            padding-left: 0;
+        }
+        .class-list li {
+            list-style-type: none;
+            margin-bottom: 10px;
+            background-color: #34495e;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .footer {
+            background-color: #FFC107;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .header nav ul {
+            list-style-type: none;
+            display: flex;
+            gap: 15px;
+            padding: 0;
+        }
+        .header nav ul li {
+            display: inline;
+        }
+        .header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .header {
+            background-color: #FFC107;
+            padding: 20px;
+            text-align: center;
+        }
+        .user-icon {
+            font-size: 1.5rem;
             color: white;
         }
     </style>
@@ -48,18 +118,19 @@
     </div>
     <div class="main-content">
         <h1 class="white-text">Evento de Resistencia</h1>
-        <p class="white-text">Selecciona el día y la hora en la que deseas participar en el evento de Resistencia</p>
+        <p class="white-text">Selecciona el día y la hora en la que deseas participar en el evento de Resistencia.</p>
 
         <!-- Bloque de manejo de errores -->
         <div th:if="${error}" class="alert alert-danger" role="alert">
             <span th:text="${error}"></span>
         </div>
 
-        <form id="zumbaForm" action="/addZumbaClass" method="post">
+        <!-- Formulario para agregar un nuevo evento de Resistencia -->
+        <form id="resistenciaForm" action="/addResistenciaClass" method="post">
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label class="white-text" for="clase">Clase:</label>
-                    <input type="text" id="clase" name="clase" required class="form-control">
+                    <label class="white-text" for="nombre_evento">Evento:</label>
+                    <input type="text" id="nombre_evento" name="nombre_evento" class="form-control" placeholder="Ingresa el nombre del evento" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="white-text" for="fecha">Fecha:</label>
@@ -70,45 +141,105 @@
                     <input type="time" id="horario" name="horario" required class="form-control">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Agregar Clase</button>
+            <button type="submit" class="btn btn-primary">Agregar Evento</button>
         </form>
 
         <h2 class="white-text">Eventos Disponibles</h2>
-        <ul>
-            <li th:each="zumbaClass : ${resistenciaClasses}">
-                <span class="white-text" th:text="${zumbaClass.nombreEvento} + ' - ' + ${#dates.format(zumbaClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${zumbaClass.horario}"></span>
-                <form action="/deleteresistencia" method="post" style="display:inline;">
-                    <input type="hidden" name="idEvento" th:value="${zumbaClass.idEvento}">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </li>
-        </ul>
+        <div class="class-list">
+            <ul>
+                <li th:each="resistenciaClass : ${resistenciaClasses}">
+                    <span class="white-text font-weight-bold" th:text="${resistenciaClass.nombreEvento}"></span><br>
+                    <span class="white-text" th:text="${#dates.format(resistenciaClass.fecha, 'yyyy-MM-dd')} + ' - ' + ${resistenciaClass.horario}"></span>
+                    <div class="button-group">
+                        <!-- Botón de Registrarse -->
+                        <form action="/registerResistenciaClass" method="post" style="display:inline;">
+                            <input type="hidden" name="id_evento" th:value="${resistenciaClass.idEvento}">
+                            <button type="submit" class="btn btn-success">Registrarse</button>
+                        </form>
+                        <!-- Botón para mostrar el formulario de modificación -->
+                        <button type="button" class="btn btn-warning" 
+                                data-toggle="modal" 
+                                th:data-target="'#modifyModal-' + ${resistenciaClass.idEvento}" 
+                                th:onclick="'storeOriginalValues(' + ${resistenciaClass.idEvento} + ')'">
+                            Modificar
+                        </button>
+                        <!-- Botón de Eliminar -->
+                        <form action="/deleteResistenciaClass" method="post" style="display:inline;">
+                            <input type="hidden" name="id_evento" th:value="${resistenciaClass.idEvento}">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+
+                    <!-- Modal para modificar la clase -->
+                    <div class="modal fade" th:id="'modifyModal-' + ${resistenciaClass.idEvento}" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modifyModalLabel">Modificar Evento</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/modifyResistenciaClass" method="post">
+                                        <input type="hidden" name="id_evento" th:value="${resistenciaClass.idEvento}">
+                                        <div class="form-group">
+                                            <label for="nombre_evento_modificar" class="col-form-label">Nombre del Evento:</label>
+                                            <input type="text" class="form-control" id="nombre_evento_modificar" name="nombre_evento" th:value="${resistenciaClass.nombreEvento}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fecha_modificar" class="col-form-label">Fecha:</label>
+                                            <input type="date" class="form-control" id="fecha_modificar" name="fecha" th:value="${resistenciaClass.fecha}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="horario_modificar" class="col-form-label">Horario:</label>
+                                            <input type="time" class="form-control" id="horario_modificar" name="horario" th:value="${resistenciaClass.horario}" required>
+                                        </div>
+                                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                                            <span th:text="${error}"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" th:onclick="'restoreOriginalValues(' + ${resistenciaClass.idEvento} + ')'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <button class="btn btn-secondary bottom-right" onclick="location.href = '/competencias'">Regresar</button>
     </div>
-    <button class="btn btn-secondary bottom-right" onclick="location.href='/competencias'">Regresar</button>
+    
     <div class="footer">
         <p>&copy; 2024 Logo Gym. Todos los derechos reservados.</p>
         <div>
-            <a href="#"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
-            <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
+            <a href="#"><i class="bi bi-facebook" style="font-size: 1.5rem; color: #3b5998;"></i></a>
+            <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem; color: #e4405f; margin-left: 10px;"></i></a>
         </div>
     </div>
-    
+
     <script>
-        document.getElementById('zumbaForm').addEventListener('submit', function(event) {
-            const idUsuario = localStorage.getItem('id_usuario');
-            if (!idUsuario) {
-                alert('No se encontró el ID del usuario en memoria. Por favor, inicie sesión nuevamente.');
-                event.preventDefault();
-                return;
+        // Funciones para almacenar y restaurar los valores originales
+        function storeOriginalValues(idEvento) {
+            const nombreEvento = document.querySelector(`#modifyModal-${idEvento} #nombre_evento_modificar`).value;
+            const fecha = document.querySelector(`#modifyModal-${idEvento} #fecha_modificar`).value;
+            const horario = document.querySelector(`#modifyModal-${idEvento} #horario_modificar`).value;
+            
+            window.originalValues = window.originalValues || {};
+            window.originalValues[idEvento] = { nombreEvento, fecha, horario };
+        }
+
+        function restoreOriginalValues(idEvento) {
+            if (window.originalValues && window.originalValues[idEvento]) {
+                document.querySelector(`#modifyModal-${idEvento} #nombre_evento_modificar`).value = window.originalValues[idEvento].nombreEvento;
+                document.querySelector(`#modifyModal-${idEvento} #fecha_modificar`).value = window.originalValues[idEvento].fecha;
+                document.querySelector(`#modifyModal-${idEvento} #horario_modificar`).value = window.originalValues[idEvento].horario;
             }
-
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'id_usuario';
-            hiddenInput.value = idUsuario;
-
-            this.appendChild(hiddenInput);
-        });
+        }
     </script>
 </body>
 </html>
